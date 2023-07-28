@@ -2,10 +2,12 @@ const {getFundingRate} = require("./binance_module/public_api");
 const {getPositions, getBalance, createMarketOrder} = require("./okx_module/private_api");
 const {getTickerList, getTickerPrice} = require("./okx_module/public_api");
 
+require('dotenv').config();
 let fundingInfo = {timestamp: new Date().getTime()};
 let btcPosition = {};
 let balanceInfo = {};
-let fundingParam = 0.00005;
+let FUNDING_PARAM = process.env.FUNDING_PARAM;
+let PORTION = process.env.PORTION;
 let tickerList;
 let tradingInfo;
 
@@ -46,12 +48,12 @@ async function main() {
                 balanceInfo = tempBalance;
             }
 
-            if (fundingInfo.fundingRate <= fundingParam) {
+            if (fundingInfo.fundingRate <= FUNDING_PARAM) {
                 if (btcPosition > 0) {
                     continue;
                 } else if (btcPosition === 0) {
                     let balance = balanceInfo['totalBalance'];
-                    let amount = balance / curPrice;
+                    let amount = balance / curPrice * PORTION;
                     let result = await createMarketOrder("BTC", "bid", amount, new Date().getTime(), {info: tradingInfo});
                 }
             } else {
