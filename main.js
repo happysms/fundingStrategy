@@ -21,7 +21,9 @@ async function main() {
     while (true) {
         try {
             let hour = new Date().getUTCHours();
-            if (![0, 8, 16].includes(hour)) {
+            let minute = new Date().getUTCMinutes();
+
+            if (![7, 15, 23].includes(hour) || minute !== 59) {
                 continue;
             }
 
