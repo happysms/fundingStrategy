@@ -39,3 +39,20 @@ module.exports.getFundingRate = async function (ticker) {
     }
 }
 
+async function getTickerPrice(ticker) {
+    // /fapi/v1/klines
+    try {
+        const binanceFuturesEndpoint = `https://fapi.binance.com/fapi/v1/klines?symbol=${ticker}USDT&interval=1d`;
+        const response = await axios.get(binanceFuturesEndpoint);
+        let data = response.data;
+        let lastData = data[data.length - 1];
+        let price = parseFloat(lastData[4]);
+        return price;
+    } catch (err){
+        // console.log(err);
+        return undefined
+    }
+}
+
+
+module.exports.getTickerPrice = getTickerPrice;
